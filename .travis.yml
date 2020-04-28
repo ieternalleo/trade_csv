@@ -1,0 +1,41 @@
+dist: trusty
+language: rust
+services: docker
+sudo: required
+env:
+  global:
+  - CRATE_NAME=trade_csv
+matrix:
+  include:
+  - env: TARGET=x86_64-pc-windows-gnu
+before_install:
+- set -e
+- rustup self update
+install:
+- sh ci/install.sh
+- source ~/.cargo/env || true
+script:
+- bash ci/script.sh
+after_script: set +e
+before_deploy:
+- sh ci/before_deploy.sh
+deploy:
+  api_key:
+    secure: cUg8Q35/gsFtf5JWH2oNQlBcAWsW0PXcXV+9PQzQ/p1WbaSlk2rzn8YEx26X/GlL3t3wnGIbPsF61tMn85dvWlzhaqhnTWXBA8DnfXolcJ4oO3RnLWpYUUVLlCylkFXkF5J+ZvaYHX3IGz4QZwkhfmXq/K/HeCtk4unnlIXij5wgkyrNy2fr8QMiUE4eYhyxhD2k+pXHZjucB2NJWDCfVIJImeH8yWYhnRqABWJcFmP2/FPSxLz/iR/TE9fOgWc0MQPoiStUozeH1yKkZ9h2jFTzI5DVFKQ/1P0CSC4YZ4aOQ40OTCFVsfT0hBPXO5evsYCdMhPLsiC1ummV/hiBmdhgReiA+9u4kMKFYQtuWaD3Vd4Vi5CkygQZAjiL+b6CRc182kYiUPzJqnDnpV8bZNs9KGw0rrS7DzUS3f28ziL/mQpOU1aw6zmM4dkMsd6r5VXG/AcfC3MYZjLhm0nLGMEpr78b1Bdh1JVS2kjjs/q01lHS0G867RjAr9lBFaSBj5dWDyYioQV2nk9xIhdnWvpEmcnE6d4ARMOKzofFA+4i7Cg9ldIbZrOuRA2yoGCMG5puOuNvvQwNja/iHw9RnjAmfzP0aMoNZRM2GJvAy2tlm6QPnqs6CHmEamiHLgX3nnwBtQgj23husBsYCAuGghVtKhepqgcEGU9tnsP98pE=
+  file_glob: true
+  file: "$CRATE_NAME-$TRAVIS_TAG-$TARGET.*"
+  on:
+    condition: "$TRAVIS_RUST_VERSION = stable"
+    tags: true
+  provider: releases
+  skip_cleanup: true
+cache: cargo
+before_cache:
+- chmod -R a+r $HOME/.cargo
+branches:
+  only:
+  - "/^v\\d+\\.\\d+\\.\\d+.*$/"
+  - master
+notifications:
+  email:
+    on_success: never
