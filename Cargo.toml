@@ -11,4 +11,7 @@ polish = "*" #Testing Framework for Rust
 log = "0.4.8" # Lightweight logging facade
 indicatif = "*" #Helps you build command line interfaces that report progress to users
 csv = "1.1.3"  #CSV reader and writer for Rust, with support for Serde
-serde = "1.0.106" # framework for serializing and deserializing Rust data structures efficiently and generically
+serde = {version="1.0.106", features = ["derive"]} # framework for serializing and deserializing Rust data structures efficiently and generically
+chrono = "0.4.11" # Date and Time Framework
+chrono_tz = "0.5" # Adds Timezone support to chrono
+
